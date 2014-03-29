@@ -76,9 +76,9 @@ Compiles the file specified by `input-path` and saves it to `output-path`.
     (sass-file-context sass-compile-file
                        (foreign-slot-value context 'sass-file-context 'output-string))
   (setf (foreign-slot-value context 'sass-file-context 'input-path)
-        (princ-to-string in-path))
+        (princ-to-string input-path))
   (setf (foreign-slot-value context 'sass-file-context 'output-path)
-        (princ-to-string out-path)))
+        (princ-to-string output-path)))
 
 (define-sass-fun sass-folder (search-path output-path)
     "=> t
