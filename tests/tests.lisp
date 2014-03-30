@@ -45,7 +45,9 @@ body {
   (with-fixture clean-foldes ((rel-path "files/*.css"))
     (let ((correct (rel-path "files/correct.scss"))
           (fail (rel-path "files/fail.scss"))
-          (include (rel-path "files/include.scss")))
+          (include (rel-path "files/include.scss"))
+          (line-comments (rel-path "files/line-comments.scss"))
+          (source-map (rel-path "files/source-map.scss")))
       (sass-file correct (css-path correct))
       (is-true (probe-file (css-path correct)))
       (is (file-equal (css-path correct) (cmp-path correct)))
@@ -56,7 +58,25 @@ body {
       (sass-file include (css-path include) :include-paths
                  (list (rel-path "files/include") (rel-path "files/include2")))
       (is-true (probe-file (css-path include)))
-      (is (file-equal (css-path include) (cmp-path include))))))
+      (is (file-equal (css-path include) (cmp-path include)))
+      
+      (sass-file line-comments (css-path line-comments) :line-comments t)
+      (is-true (probe-file (css-path line-comments)))
+      (is (file-equal (css-path line-comments) (cmp-path line-comments)))
+      
+      (multiple-value-bind (result source-map-string)
+          (sass-file source-map (css-path source-map) :source-map t)
+        (is (equal result (alexandria:read-file-into-string
+                           (rel-path "files/source-map.cmp"))))
+        (is (equal source-map-string (alexandria:read-file-into-string
+                                      (rel-path "files/source-map.cmp.map")))))
+      (is-true (probe-file (css-path source-map)))
+      (is (file-equal (css-path source-map) (cmp-path source-map)))
+      
+      (signals warning
+        (sass-file source-map (css-path source-map) :source-map t :line-comments t))
+      (is-true (probe-file (css-path source-map)))
+      (is (file-equal (css-path source-map) (cmp-path source-map))))))
 
 ;;; sass-folder
 

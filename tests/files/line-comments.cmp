@@ -1,0 +1,4 @@
+/* line 4, /home/chfin/lisp/projects/libsass/tests/files/line-comments.scss */
+body {
+  font: 100% Helvetica, sans-serif;
+  color: #333; }

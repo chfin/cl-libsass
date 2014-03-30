@@ -25,8 +25,10 @@ Each of these functions takes keyword arguments according to the options struct 
 
 * `:output-style`
   is one of `:nested`, `:expanded`, `:compact` or `:compressed`.
-* `:source-comments`
-  is one of `:none`, `:default` or `:map`
+* `:line-comments`
+  is a boolean.
+* `:source-map`
+  is a boolean.
 * `:include-paths`
   is a pathname designator or a list of pathname designators.
 * `:image-path`
@@ -34,12 +36,17 @@ Each of these functions takes keyword arguments according to the options struct 
 * `:precision`
   is an integer (currently not available because of libsass version 1.0.1)
 
+If both `:line-comments` and `:source-map` are `t`,
+a warning will be signaled and `:source-map` will be preferred,
+since these optiont are incompatible in libsass.
+
 The default values for these options are defined by special variables
 which are also exported by the `libsass` package:
 
 ```common-lisp
 (defvar *default-output-style* :nested)
-(defvar *default-source-comments* :none)
+(defvar *default-source-map* nil)
+(defvar *default-line-comments* nil)
 (defvar *default-include-paths* "")
 (defvar *default-image-path* "images")
 (defvar *default-precision* 5)

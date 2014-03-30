@@ -8,15 +8,12 @@
     :compact 2
     :compressed 3))
 
-(defparameter *sass-source-comments*
-  '(:none 0
-    :default 1
-    :map 2))
-
 (defvar *default-output-style* :nested
-  "Default output style `(or :nested :expanded :compact :compressed)`.")
-(defvar *default-source-comments* :none
-  "Default value for source comments `(or :none :default :map)`.")
+  "Default output style `(or :nested :expanded :compact :compressed)`")
+(defvar *default-source-map* nil
+  "Default value of the source-map option `boolean`")
+(defvar *default-line-comments* nil
+  "Default value of the line-comments option `boolean`")
 (defvar *default-include-paths* nil
   "Default value for include paths `pathname` or `(list pathname)`")
 (defvar *default-image-path* "images"
@@ -30,12 +27,18 @@
    (message :initarg :message
             :reader sass-error-message)))
 
-(defun set-options (options output-style source-comments include-paths image-path ;;precision
+(defun set-options (options output-style line-comments source-map include-paths image-path
+                    ;;precision
                     )
+  (when (and line-comments source-map)
+    (warn "line-comments and source-map are incompatible, preferring source-map"))
   (setf (foreign-slot-value options 'sass-options 'output-style)
         (getf *sass-style* output-style))
   (setf (foreign-slot-value options 'sass-options 'source-comments)
-        (getf *sass-source-comments* source-comments))
+        (cond ;; comment style
+          (source-map 2)
+          (line-comments 1)
+          (t 0)))
   (setf (foreign-slot-value options 'sass-options 'include-paths)
         (format nil "~{~a~^:~}" (alexandria:ensure-list include-paths)))
   (setf (foreign-slot-value options 'sass-options 'image-path)
@@ -53,7 +56,8 @@
                            &body body)
   `(defun ,name (,@params
                  &key (output-style *default-output-style*)
-                   (source-comments *default-source-comments*)
+                   (line-comments *default-line-comments*)
+                   (source-map *default-source-map*)
                    (include-paths *default-include-paths*)
                    (image-path *default-image-path*)
                    ;;(precision *default-precision*) ;;for post 1.0.1
@@ -62,7 +66,8 @@
      (restart-case
          (,context-macro (context)
            (set-options (foreign-slot-pointer context '(:struct ,type) 'options)
-                        output-style source-comments include-paths image-path ;;precision
+                        output-style line-comments source-map include-paths image-path
+                        ;;precision
                         )
            ,@body
            (,compile-fn context)
@@ -82,11 +87,16 @@ Compiles `in` which is a Sass string."
 Compiles the file specified by `input-path` and saves it to `output-path`.
 `input-path` and `output-path` are pathname designators."
     (sass-file-context sass-compile-file with-file-context
-                       (alexandria:write-string-into-file
-                        (foreign-slot-value context 'sass-file-context 'output-string)
-                        output-path :if-exists :supersede))
+                       (values
+                        (alexandria:write-string-into-file
+                         (foreign-slot-value context 'sass-file-context 'output-string)
+                         output-path :if-exists :supersede)
+                        (foreign-slot-value context 'sass-file-context 'source-map-string)))
   (setf (foreign-slot-value context 'sass-file-context 'input-path)
         (princ-to-string input-path))
+  (when source-map
+    (setf (foreign-slot-value context 'sass-file-context 'source-map-file)
+          (format nil "~a.map" output-path)))
   #|git: (setf (foreign-slot-value context 'sass-file-context 'output-path)
   (princ-to-string output-path))|#)
 
