@@ -17,7 +17,10 @@
      ,@body))
 
 (defun cmp-path (path)
-  (pathname (concatenate 'string (princ-to-string path) ".cmp")))
+  (make-pathname :type "cmp" :defaults path))
 
 (defun css-path (path)
   (make-pathname :type "css" :defaults path))
+
+(defun folder-path (directory filename)
+  (make-pathname :type "css" :defaults (merge-pathnames directory filename)))

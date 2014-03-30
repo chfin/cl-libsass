@@ -1,0 +1,7 @@
+/* this file is imported */
+.test {
+  color: #ccc; }
+
+/* this file is also imported */
+.test2 {
+  color: #F0F0F0; }

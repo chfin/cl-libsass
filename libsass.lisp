@@ -17,8 +17,8 @@
   "Default output style `(or :nested :expanded :compact :compressed)`.")
 (defvar *default-source-comments* :none
   "Default value for source comments `(or :none :default :map)`.")
-(defvar *default-include-paths* ""
-  "Default value for include paths `string`")
+(defvar *default-include-paths* nil
+  "Default value for include paths `pathname` or `(list pathname)`")
 (defvar *default-image-path* "images"
   "Default image path `string`")
 (defvar *default-precision* 5
@@ -36,8 +36,10 @@
         (getf *sass-style* output-style))
   (setf (foreign-slot-value options 'sass-options 'source-comments)
         (getf *sass-source-comments* source-comments))
-  (setf (foreign-slot-value options 'sass-options 'include-paths) include-paths)
-  (setf (foreign-slot-value options 'sass-options 'image-path) image-path)
+  (setf (foreign-slot-value options 'sass-options 'include-paths)
+        (format nil "~{~a~^:~}" (alexandria:ensure-list include-paths)))
+  (setf (foreign-slot-value options 'sass-options 'image-path)
+        (princ-to-string image-path))
   ;;(setf (foreign-slot-value options 'sass-options 'precision) precision) ;;for post 1.0.1
   )
 

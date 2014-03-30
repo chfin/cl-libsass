@@ -43,22 +43,35 @@ body {
 (test sass-file
   "Tests the file in file out sass function"
   (with-fixture clean-foldes ((rel-path "files/*.css"))
-    (do-dir (path (rel-path "files/*.scss"))
-      (sass-file path (css-path path))
-      (is-true (probe-file (css-path path)))
-      (is (file-equal (css-path path) (cmp-path (css-path path)))))))
+    (let ((correct (rel-path "files/correct.scss"))
+          (fail (rel-path "files/fail.scss"))
+          (include (rel-path "files/include.scss")))
+      (sass-file correct (css-path correct))
+      (is-true (probe-file (css-path correct)))
+      (is (file-equal (css-path correct) (cmp-path correct)))
+      
+      (signals libsass:sass-error
+        (sass-file fail (css-path fail)))
+      
+      (sass-file include (css-path include) :include-paths
+                 (list (rel-path "files/include") (rel-path "files/include2")))
+      (is-true (probe-file (css-path include)))
+      (is (file-equal (css-path include) (cmp-path include))))))
 
 ;;; sass-folder
 
 (test sass-folder
   "Tests the folder based sass function"
-  (with-fixture clean-foldes ((rel-path "files/folder_css/*.css"))
-    (sass-folder (rel-path "files/folder_sass/")
-                 (rel-path "files/folder_css/"))
-    (do-dir (path (rel-path "files/folder_sass/*.scss"))
-      (is-true (probe-file (css-path path))))
-    (do-dir (path (rel-path "files/folder_css/*.css"))
-      (is (file-equal path (cmp-path path))))))
+  (let ((sass-dir (rel-path "files/folder_sass/"))
+        (css-dir (rel-path "files/folder_css/")))
+    (with-fixture clean-foldes ((rel-path "files/folder_css/*.css"))
+      (sass-folder sass-dir css-dir)
+      (do-dir (path (rel-path "files/folder_sass/*.scss"))
+        (is-true (probe-file (folder-path css-dir path))
+                 "file does not exist: ~a (currently not implemented)"
+                 (folder-path css-dir path)))
+      (do-dir (path (rel-path "files/folder_css/*.css"))
+        (is (file-equal path (cmp-path path)))))))
 
 (defun run-tests ()
   (run! 'sass-tests))
