@@ -2,12 +2,15 @@
 
 (in-package #:libsass)
 
+;;; based on libsass 1.0.1
+
 (defcstruct sass-options
   (output-style :int)
   (source-comments :int)
   (include-paths :string)
   (image-path :string)
-  (precision :int))
+  ;;(precision :int) ;; for next release after 1.0.1
+  )
 
 (defcstruct sass-context
   (source-string :string)
@@ -32,7 +35,7 @@
 
 (defcstruct sass-file-context
   (input-path :string)
-  (output-path :string)
+  ;;(output-path :string) ;;comes in version after 1.0.1
   (output-string :string)
   (source-map-string :string)
   (source-map-file :string)
@@ -43,7 +46,23 @@
   (included-files (:pointer :string))
   (num-included-files :int))
 
-#|struct sass_file_context {
+
+#|1.0.1
+struct sass_file_context {
+  const char* input_path;
+  char* output_string;
+  char* source_map_string;
+  char* source_map_file;
+  struct sass_options options;
+  int error_status;
+  char* error_message;
+  struct Sass_C_Function_Data* c_functions;
+  char** included_files;
+  int num_included_files;
+};|#
+
+#|git
+struct sass_file_context {
   const char* input_path;
   const char* output_path;
   char* output_string;
