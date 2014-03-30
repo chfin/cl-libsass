@@ -17,7 +17,7 @@ The package `libsass` exports three functions:
   The compiled CSS is also returned as a string.
 * `(sass-folder search-path output-path &key ...)`
   compiles all Sass files under `search-path` and saves them under `output-path`
-  (currently not working).
+  (**currently not implemented in libsass**).
 
 ### Options
 

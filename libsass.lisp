@@ -104,7 +104,9 @@ Compiles the file specified by `input-path` and saves it to `output-path`.
     "=> t
 Compiles all Sass files from `search-path` to `output-path`.
 `search-path` and `output-path` are pathname designators."
-    (sass-folder-context sass-compile-folder with-folder-context t)
+    (sass-folder-context sass-compile-folder with-folder-context
+                         (print (convert-from-foreign context '(:struct sass-folder-context))))
+  (warn "libsass currently does not implement sass_compile_folder, so this is a stub.")
   (setf (foreign-slot-value context 'sass-folder-context 'search-path)
         (princ-to-string search-path))
   (setf (foreign-slot-value context 'sass-folder-context 'output-path)
