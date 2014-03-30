@@ -32,7 +32,7 @@ Each of these functions takes keyword arguments according to the options struct 
 * `:image-path`
   is a pathname-designator
 * `:precision`
-  is an integer (currently not available because of libsass version 1.0.1
+  is an integer (currently not available because of libsass version 1.0.1)
 
 The default values for these options are defined by special variables
 which are also exported by the `libsass` package:
