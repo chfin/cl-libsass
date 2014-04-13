@@ -18,6 +18,7 @@ body {
   font: 100% Helvetica, sans-serif;
   color: #333; }
 ")
+
 (def-suite sass-tests
     :description "Test suite for sass tests")
 
@@ -93,6 +94,13 @@ body {
                  (folder-path css-dir path)))
       #+nil(do-dir (path (rel-path "files/folder_css/*.css"))
         (is (file-equal path (cmp-path path)))))))
+
+(test sass-sbcl-bug
+  "Tests a strange bug on sbcl"
+  (is (equal (sass "$foo: 40.063em; .test { fontsize: $foo; }")
+             ".test {
+  font-size: 40.063em; }
+")))
 
 (defun run-tests ()
   (run! 'sass-tests))

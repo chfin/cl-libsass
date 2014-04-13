@@ -27,6 +27,12 @@
    (message :initarg :message
             :reader sass-error-message)))
 
+(defmethod print-object ((object sass-error) stream)
+  (print-unreadable-object (object stream)
+    (format stream "An error (~a) occured in libsass: ~a"
+            (sass-error-status object)
+            (sass-error-message object))))
+
 (defun set-options (options output-style line-comments source-map include-paths image-path
                     ;;precision
                     )
