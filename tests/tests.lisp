@@ -97,7 +97,7 @@ body {
 
 (test sass-sbcl-bug
   "Tests a strange bug on sbcl"
-  (is (equal (sass "$foo: 40.063em; .test { fontsize: $foo; }")
+  (is (equal (sass "$foo: 40.063em; .test { font-size: $foo; }")
              ".test {
   font-size: 40.063em; }
 ")))
