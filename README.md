@@ -5,6 +5,7 @@ cl-libsass is a wrapper for [libsass](http://libsass.org/) (v1.0.1) using CFFI.
 ## Installation
 
 Currently not on Quicklisp, but ASDF loadable.
+If you are using SBCL you will need `sassc`.
 
 ## Usage
 
@@ -15,9 +16,11 @@ The package `libsass` exports three functions:
 * `(sass-file input-path output-path &key ...)`
   compiles a file (`input-path`) and saves it to `output-path`.
   The compiled CSS is also returned as a string.
+<!--
 * `(sass-folder search-path output-path &key ...)`
   compiles all Sass files under `search-path` and saves them under `output-path`
   (**currently not implemented in libsass**).
+-->
 
 ### Options
 
